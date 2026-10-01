@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     sandbox_timeout_seconds: int = 30
     sandbox_cpu_limit: int = 1
     sandbox_memory_limit: str = "512m"
+    # Supabase configuration
+    supabase_url: str = ""
+    supabase_key: str = ""
+    supabase_enabled: bool = False
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

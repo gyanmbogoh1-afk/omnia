@@ -11,6 +11,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omnia"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
     build:
@@ -21,10 +26,12 @@ services:
       - .env
     environment:
       DATABASE_URL: postgresql+asyncpg://omnia:omnia@postgres:5432/omnia
+      PYTHONUNBUFFERED: "1"
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     volumes:
       - .:/app
     command: uvicorn services.api.app.main:app --host 0.0.0.0 --port 8000 --reload
@@ -42,6 +49,7 @@ services:
       - api
     volumes:
       - ./apps/web:/app
+      - /app/node_modules
     command: npm run dev
 
 volumes:
