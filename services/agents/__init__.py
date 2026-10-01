@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Protocol
+from typing import Any
 
 
 @dataclass
@@ -10,15 +10,6 @@ class AgentRun:
     instructions: str
     model: str
     metadata: dict[str, Any] = field(default_factory=dict)
-
-
-class Agent(Protocol):
-    role: str
-    instructions: str
-    model: str
-
-    async def execute(self, prompt: str) -> str:
-        ...
 
 
 class GeneralAgent:
@@ -64,3 +55,6 @@ class CriticAgent:
 
     async def execute(self, prompt: str) -> str:
         return f"CriticAgent reviewed: {prompt}"
+
+
+__all__ = ["GeneralAgent", "ResearchAgent", "CodingAgent", "MathematicsAgent", "CriticAgent"]

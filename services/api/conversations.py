@@ -22,9 +22,9 @@ class ConversationStore:
         self._items: dict[str, Conversation] = {}
 
     def create(self, title: str) -> Conversation:
-        conv = Conversation(id=f"conv-{len(self._items) + 1}", title=title)
-        self._items[conv.id] = conv
-        return conv
+        conversation = Conversation(id=f"conv-{len(self._items) + 1}", title=title)
+        self._items[conversation.id] = conversation
+        return conversation
 
     def get(self, conversation_id: str) -> Conversation | None:
         return self._items.get(conversation_id)
@@ -34,6 +34,6 @@ class ConversationStore:
 
     def add_message(self, conversation_id: str, role: str, content: str) -> ConversationMessage:
         conversation = self._items[conversation_id]
-        msg = ConversationMessage(role=role, content=content)
-        conversation.messages.append(msg)
-        return msg
+        message = ConversationMessage(role=role, content=content)
+        conversation.messages.append(message)
+        return message

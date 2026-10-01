@@ -19,7 +19,13 @@ class OrchestrationResult:
 
 
 class Orchestrator:
-    def __init__(self, model_provider: str = "inmemory", activity_logger: ActivityLogger | None = None, memory_service: MemoryService | None = None, tool_executor: ToolExecutor | None = None) -> None:
+    def __init__(
+        self,
+        model_provider: str = "inmemory",
+        activity_logger: ActivityLogger | None = None,
+        memory_service: MemoryService | None = None,
+        tool_executor: ToolExecutor | None = None,
+    ) -> None:
         self.model_provider = get_model_provider(model_provider)
         self.activity_logger = activity_logger or ActivityLogger()
         self.memory_service = memory_service or MemoryService()
@@ -38,10 +44,10 @@ class Orchestrator:
         tools_used: list[str] = []
         memory_items: list[dict[str, Any]] = []
 
-        if "calculate" in request.lower() or "math" in request.lower():
-            calculation = await self.tool_executor.run("calculator", expression="(1/((1-(0.99**2))**0.5))")
+        if any(word in request.lower() for word in ["calculate", "math", "equation"]):
+            result = await self.tool_executor.run("calculator", expression="2 + 3 * 4")
             tools_used.append("calculator")
-            self.memory_service.save_memory(kind="semantic", content=f"Calculation output: {calculation}", source="tool:calculator")
+            self.memory_service.save_memory(kind="semantic", content=f"Calculation result: {result}", source="tool:calculator")
             memory_items = self.memory_service.list_memories(limit=5)
 
         messages = [{"role": "user", "content": request}]
@@ -52,10 +58,12 @@ class Orchestrator:
             metadata={"provider": self.model_provider.name, "response": response},
             success=True,
         )
-
         return OrchestrationResult(
             response=response,
             plan=plan.__dict__,
             tools_used=tools_used,
             memory=memory_items,
         )
+
+
+__all__ = ["Orchestrator", "OrchestrationResult"]

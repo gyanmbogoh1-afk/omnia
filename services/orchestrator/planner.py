@@ -13,11 +13,14 @@ class TaskPlan:
 
 class Planner:
     def plan(self, prompt: str) -> TaskPlan:
-        text = prompt.lower()
-        steps = ["understand request", "select model", "run relevant tools if needed", "compose final answer"]
-        if "calculate" in text or "math" in text:
-            steps = ["understand calculation", "identify formula", "solve with tool or logic", "verify result", "explain assumptions"]
-        if "research" in text or "science" in text:
+        normalized = prompt.lower()
+        steps = ["understand request", "select model", "run relevant tools if needed", "compose response"]
+        if "calculate" in normalized or "math" in normalized:
+            steps = ["understand calculation", "identify formula", "solve with tool", "verify result", "explain assumptions"]
+        if "research" in normalized or "science" in normalized or "theoretical" in normalized:
             steps = ["frame question", "retrieve relevant knowledge", "check evidence", "summarize uncertainty", "answer with caveats"]
-        complexity = "high" if any(k in text for k in ["research", "science", "optimize", "model", "experiment"]) else "low"
+        complexity = "high" if any(token in normalized for token in ["research", "science", "theory", "optimize", "experiment", "simulation"]) else "low"
         return TaskPlan(task=prompt, steps=steps, complexity=complexity)
+
+
+__all__ = ["TaskPlan", "Planner"]

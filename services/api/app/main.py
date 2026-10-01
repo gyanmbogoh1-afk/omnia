@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
@@ -36,7 +34,6 @@ async def health() -> dict[str, str]:
 async def chat(request: ChatRequest) -> ChatResponse:
     if not request.message.strip():
         raise HTTPException(status_code=400, detail="message cannot be empty")
-
     result = await orchestrator.process(request.message, user_id=request.user_id, project_id=request.project_id)
     return ChatResponse(
         response=result.response,

@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+import json
 from typing import Any
 
 from services.activity.logger import ActivityLogger
-from services.memory import MemoryService
-from services.models.provider import ModelProvider
 from services.tools.base import ToolRegistry
 from services.tools.calculator import CalculatorTool
 from services.tools.sandbox import PythonSandboxTool
@@ -37,11 +36,15 @@ class ToolExecutor:
                 success=True,
             )
             return result
-        except Exception as exc:  # pragma: no cover - emergency guard
+        except Exception as exc:
+            error_payload = {"tool": tool_name, "error": str(exc)}
             self.activity_logger.log(
                 action="tool.failed",
                 component="tool_system",
-                metadata={"tool": tool_name, "error": str(exc)},
+                metadata=error_payload,
                 success=False,
             )
             raise
+
+
+__all__ = ["ToolExecutor"]

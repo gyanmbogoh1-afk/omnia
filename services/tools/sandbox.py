@@ -19,7 +19,7 @@ class PythonSandboxTool(Tool):
             "required": ["code"],
         },
         risk_level="medium",
-        permissions=["sandbox"]
+        permissions=["sandbox"],
     )
 
     async def execute(self, **kwargs: Any) -> Any:

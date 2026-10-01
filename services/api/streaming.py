@@ -11,4 +11,5 @@ async def stream_demo() -> StreamingResponse:
     async def generator():
         for token in ["OMNIA", " is", " working", " on", " your", " request."]:
             yield token
+
     return StreamingResponse(generator(), media_type="text/plain")

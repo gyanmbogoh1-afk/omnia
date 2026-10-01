@@ -18,9 +18,18 @@ class ActivityLogger:
         self.events: list[ActivityEvent] = []
 
     def log(self, *, action: str, component: str, metadata: dict[str, Any] | None = None, success: bool = True) -> ActivityEvent:
-        event = ActivityEvent(timestamp="now", action=action, component=component, metadata=metadata or {}, success=success)
+        event = ActivityEvent(
+            timestamp="now",
+            action=action,
+            component=component,
+            metadata=metadata or {},
+            success=success,
+        )
         self.events.append(event)
         return event
 
     def list(self) -> list[ActivityEvent]:
         return list(self.events)
+
+
+__all__ = ["ActivityEvent", "ActivityLogger"]
