@@ -1,0 +1,48 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: omnia-postgres
+    environment:
+      POSTGRES_DB: omnia
+      POSTGRES_USER: omnia
+      POSTGRES_PASSWORD: omnia
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.api
+    container_name: omnia-api
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://omnia:omnia@postgres:5432/omnia
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    command: uvicorn services.api.app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  web:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.web
+    container_name: omnia-web
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web:/app
+    command: npm run dev
+
+volumes:
+  postgres_data:

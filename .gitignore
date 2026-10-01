@@ -1,0 +1,18 @@
+# Ignore environment files and local artifacts
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+node_modules/
+.next/
+out/
+coverage/
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+*.log
